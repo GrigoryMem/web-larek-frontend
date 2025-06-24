@@ -14,7 +14,7 @@ import { cloneTemplate, ensureElement } from './utils/utils';
 import { Modal } from './components/common/Modal';
 import { isNumber } from 'lodash';
 import { TBaseCardProduct } from './types/index';
-import { BasketView } from './components/BasketView';
+import { BasketView, IBasketView } from './components/BasketView';
 
 
 
@@ -175,11 +175,18 @@ events.on('basket:open', () => {
       //  счетчик карточки
     }}).render(basketGood);
   })
+
+//  составляем  контент для корзины
+  const basketContent:IBasketView = {
+    items:basketCards,
+    totalPrice:basketModel.getTotalSum()
+  }
+   basketView.render(basketContent);
   
-  //  отображаем товары в корзине
+  //  отображаем содержимое корзины
   modal.render({
     //  здесь должно быть что то еще...
-       content: basketView.render({items:basketCards})
+       content: basketView.render(basketContent)
       
   });
   

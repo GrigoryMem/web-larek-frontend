@@ -12,8 +12,7 @@ interface IBasketModel {
   validateOrder():boolean;
   updateOrderItems():void;
   clearBasket():void;
-  
-  
+  getTotalSum(): number
 }
 
 
@@ -119,7 +118,7 @@ export class BasketModel extends Model<IBasketModel> implements IBasketModel{
 
   }
 
-  protected getTotalSum(): number {
+  getTotalSum(): number {
     //  получаем все цены товаров
     const sumsGoods = Array.from(this._items.values())
 

@@ -4,7 +4,7 @@ import { ensureElement } from "../utils/utils";
 import { Component } from "./base/Component";
 
 //  интерфейс для отображения динамических элементов корзины
-interface IBasketView {
+export interface IBasketView {
   items:HTMLElement[];
   totalPrice:number;
 }
