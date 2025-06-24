@@ -155,7 +155,7 @@ events.on<IProductWithCart>('preview:changed', (cardData:IProductWithCart) => {
 
 })
 
-//  подписываемся если нужно открыть корзину
+//  подписываемся если нужно открыть корзину (клик по кнопке корзины)
 events.on('basket:open', () => {
   
   // получаем список товаров в из модели данных корзины и
@@ -176,16 +176,19 @@ events.on('basket:open', () => {
     }}).render(basketGood);
   })
 
+  const message = document.createElement('div');
+  message.textContent = 'Корзина пуста';
 //  составляем  контент для корзины
   const basketContent:IBasketView = {
-    items:basketCards,
+    items:basketCards.length>0 ? basketCards : [message],
     totalPrice:basketModel.getTotalSum()
   }
-   basketView.render(basketContent);
+
+ basketView.render(basketContent);
   
   //  отображаем содержимое корзины
   modal.render({
-    //  здесь должно быть что то еще...
+   
        content: basketView.render(basketContent)
       
   });

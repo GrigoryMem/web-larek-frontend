@@ -5,7 +5,7 @@ import { Component } from "./base/Component";
 
 //  интерфейс для отображения динамических элементов корзины
 export interface IBasketView {
-  items:HTMLElement[];
+  items:HTMLElement[] | HTMLElement;
   totalPrice:number;
 }
 
