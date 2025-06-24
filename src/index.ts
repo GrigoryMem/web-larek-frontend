@@ -41,7 +41,9 @@ const basketModel = new BasketModel({},events);
 // Вью
 const page = new PageContainer(document.body,events);// страница
 const modal = new Modal(modalContainer,events) // модалка
-const basketView = new BasketView(cloneTemplate(basketTemplate));
+const basketView = new BasketView(cloneTemplate(basketTemplate),{onClick: () => {
+  console.log('wcwcccw')
+}});// корзина
 
 
 
@@ -197,7 +199,7 @@ events.on('basket:open', () => {
   message.textContent = 'Корзина пуста';
 //  составляем  контент для корзины
   const basketContent:IBasketView = {
-    items:basketCards.length>0 ? basketCards : [message],
+    items:basketCards.length>0 ? basketCards : [message], // если товаров нет то показываем сообщение
     totalPrice: basketModel.getTotalSum()
   }
 

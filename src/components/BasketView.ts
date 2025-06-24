@@ -1,5 +1,3 @@
-// import { IView,IViewConstructor } from "../types";
-
 import { ensureElement } from "../utils/utils";
 import { Component } from "./base/Component";
 
@@ -39,6 +37,12 @@ export class BasketView extends Component<IBasketView> {
 
   set totalPrice(value:number) {
     this._totalPrice.textContent = value.toString();
+// если общая стоимость ноль то блокируем кнопку
+    if(value ===0){
+      this.setDisabled(this._button,true)
+    }else{
+      this.setDisabled(this._button,false)
+    }
   }
  
 }
