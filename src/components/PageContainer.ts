@@ -25,6 +25,7 @@ export class PageContainer extends Component<IPageContainer>{
 
         this._basket.addEventListener('click', () => {
             events.emit('basket:open');
+            console.log('Click basket');
         });
     }
 

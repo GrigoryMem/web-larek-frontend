@@ -4,7 +4,7 @@ import { CardsData } from './components/CardsModel';
 import { Api } from './components/base/api';
 import { API_URL,CDN_URL,testCards } from './utils/constants';
 import { AppApi } from './components/AppApi';
-import { IProduct, IProductWithCart } from './types';
+import { IProduct, IProductWithCart,TBasketProduct } from './types/index';
 import { CatalogChangeEvent } from './types/index';
 import { IOrder } from './types';
 import { BasketModel, GoodInBasket } from './components/BasketModel';
@@ -43,103 +43,20 @@ const page = new PageContainer(document.body,events);// страница
 const modal = new Modal(modalContainer,events) // модалка
 const basketView = new BasketView(cloneTemplate(basketTemplate));
 
-// тестирование вью карточек
-  // const detaildCardExample =  {
-  //   "id": "412bcf81-7e75-4e70-bdb9-d3c73c9803b7",
-  //   "description": "Откройте эти куки, чтобы узнать, какой фреймворк вы должны изучить дальше.",
-  //   "image": "https://larek-api.nomoreparties.co/content/weblarek/Mithosis.svg",
-  //   "title": "Фреймворк куки судьбы",
-  //   "category": "дополнительное",
-  //   "price": 'Бесценный товар', // можно цифру для теста
-  //   "isInCart":false
-  // }
-
-//  тесты:
-//  цена null -  блокируем покупку тк товар бесценный
-// товар в коризне -  удалить товар из корзины
-
-// const shortCardExample =  {
-//   "id": "412bcf81-7e75-4e70-bdb9-d3c73c9803b7",
-//   "image": "https://larek-api.nomoreparties.co/content/weblarek/Mithosis.svg",
-//   "title": "Фреймворк куки судьбы",
-//   "category": "дополнительное",
-//   "price": 2500
-// }
-
-const basketCardExample =  {
-  "id": "412bcf81-7e75-4e70-bdb9-d3c73c9803b7",
-  "title": "Фреймворк куки судьбы",
-  "price": 2500,
-  "index":10
-}
-
-const basketCard = new BasketCard(cloneTemplate(basketCardTemplate),{onRemove: () => {
-  console.log(basketCardExample.id);
-  //  удалить из корзины
-  // пометить в модели данных что товар удален
-  //  счетчик карточки
-}}).render(basketCardExample);
-
-
-
-modal.render({
-  content: basketView.render({items:[basketCard]})
-});
-
-
-// Тест карточки каталога
-// const shortCard = new ShortCard(cloneTemplate(shortCardTemplate),{
-//   onClick: () => {
-//     console.log('click');
-//   }
-// }).render(shortCardExample);
-// page.catalog=[shortCard];
-
-// Тест превью карточки
-// const detailedCard = new DetailedCard(cloneTemplate(detailedCardTemplate),{
-//   onToggleCart: (card) => {
-//     if(card.isInCart){ // если товар в корзине - удаляем его
-//       // удаляем из  данных корзины
-//       basketModel.remove(card.id);
-//       // отмечаем в модели данных что УДАЛИЛИ товар из корзины
-//       cardsData.toggleInCart(card.id,false)
-//       // events.emit('cards:changed')
-      
-//     }else{ // если товар не в корзине - добавляем его
-      
-//       if(isNumber(card.price)){  // товар действиельно имеет цену
-//         //  создаем товар в количестве 1 шт
-//         const createdGood: GoodInBasket = {
-//           total:1,
-//           price:card.price as number // теперь цена точно число
-//         }
-//         // добавляем в корзину
-//         basketModel.add(card.id,createdGood);
-//         // отмечаем в модели данных что ДОБАВИЛИ товар в корзину
-//         cardsData.toggleInCart(card.id,true)
-//       }
-     
-//     }
-//   }
-// }).render(detaildCardExample);
-// // const basketCard = new BasketCard(cloneTemplate(basketCardTemplate)).render(basketCardExample);
-// const modal = new Modal(modalContainer,events).render({
-//   content: detailedCard
-// });
 
 
 // Разработка
 
 //  получаем карточки с сервера
-cardsData.setCards(testCards.items);
-// appApi.getAllCards()
-//   .then((cards) => {
-//     cardsData.setCards(cards)
+// cardsData.setCards(testCards.items);
+appApi.getAllCards()
+  .then((cards) => {
+    cardsData.setCards(cards)
     
-//   })
-//   .catch((error) => {
-//     console.error(error);
-//   });
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 
   events.onAll(({eventName,data}) => {
     console.log(eventName,data);
@@ -200,7 +117,8 @@ events.on<IProductWithCart>('preview:changed', (cardData:IProductWithCart) => {
           //  создаем товар в количестве 1 шт
           const createdGood: GoodInBasket = {
             total:1,
-            price:card.price as number // теперь цена точно число
+            price:card.price as number, // теперь цена точно число
+            title:card.title
           }
           // добавляем в корзину
           basketModel.add(card.id,createdGood);
@@ -235,7 +153,34 @@ events.on<IProductWithCart>('preview:changed', (cardData:IProductWithCart) => {
 
 })
 
+//  подписываемся если нужно открыть корзину
+events.on('basket:open', () => {
+  
+  // получаем список товаров в из модели данных корзины и
+  //  обертываем в вью интерфейс карточки корзины
+  const basketCards = basketModel.items.map((item,index) => {
+    console.log("Товар",item)
+    const basketGood = {
+      ...item,
+      displayIndex:++index
+    }
 
+    
+    return new BasketCard(cloneTemplate(basketCardTemplate),{onRemove: () => {
+      // console.log(basketCardExample.id);
+      //  удалить из корзины
+      // пометить в модели данных что товар удален
+      //  счетчик карточки
+    }}).render(basketGood);
+  })
+
+  //  отображаем товары в корзине
+  modal.render({
+    //  здесь должно быть что то еще...
+       content: basketView.render({items:basketCards})
+      
+  });
+})
 
 
 events.on('basket:changed', () => {
@@ -350,3 +295,88 @@ events.on('modal:close', () => {
 // appApi.sendOrder(order)
 // .then((result) => console.log(result))
 // .catch((error) => console.error(error));
+
+
+// ТЕстирование вью карточек
+  // const detaildCardExample =  {
+  //   "id": "412bcf81-7e75-4e70-bdb9-d3c73c9803b7",
+  //   "description": "Откройте эти куки, чтобы узнать, какой фреймворк вы должны изучить дальше.",
+  //   "image": "https://larek-api.nomoreparties.co/content/weblarek/Mithosis.svg",
+  //   "title": "Фреймворк куки судьбы",
+  //   "category": "дополнительное",
+  //   "price": 'Бесценный товар', // можно цифру для теста
+  //   "isInCart":false
+  // }
+
+//  тесты:
+//  цена null -  блокируем покупку тк товар бесценный
+// товар в коризне -  удалить товар из корзины
+
+// const shortCardExample =  {
+//   "id": "412bcf81-7e75-4e70-bdb9-d3c73c9803b7",
+//   "image": "https://larek-api.nomoreparties.co/content/weblarek/Mithosis.svg",
+//   "title": "Фреймворк куки судьбы",
+//   "category": "дополнительное",
+//   "price": 2500
+// }
+
+// const basketCardExample =  {
+//   "id": "412bcf81-7e75-4e70-bdb9-d3c73c9803b7",
+//   "title": "Фреймворк куки судьбы",
+//   "price": 2500,
+//   "index":10
+// }
+
+// const basketCard = new BasketCard(cloneTemplate(basketCardTemplate),{onRemove: () => {
+//   console.log(basketCardExample.id);
+//   //  удалить из корзины
+//   // пометить в модели данных что товар удален
+//   //  счетчик карточки
+// }}).render(basketCardExample);
+
+
+
+// modal.render({
+//   content: basketView.render({items:[basketCard]})
+// });
+
+
+// Тест карточки каталога
+// const shortCard = new ShortCard(cloneTemplate(shortCardTemplate),{
+//   onClick: () => {
+//     console.log('click');
+//   }
+// }).render(shortCardExample);
+// page.catalog=[shortCard];
+
+// Тест превью карточки
+// const detailedCard = new DetailedCard(cloneTemplate(detailedCardTemplate),{
+//   onToggleCart: (card) => {
+//     if(card.isInCart){ // если товар в корзине - удаляем его
+//       // удаляем из  данных корзины
+//       basketModel.remove(card.id);
+//       // отмечаем в модели данных что УДАЛИЛИ товар из корзины
+//       cardsData.toggleInCart(card.id,false)
+//       // events.emit('cards:changed')
+      
+//     }else{ // если товар не в корзине - добавляем его
+      
+//       if(isNumber(card.price)){  // товар действиельно имеет цену
+//         //  создаем товар в количестве 1 шт
+//         const createdGood: GoodInBasket = {
+//           total:1,
+//           price:card.price as number // теперь цена точно число
+//         }
+//         // добавляем в корзину
+//         basketModel.add(card.id,createdGood);
+//         // отмечаем в модели данных что ДОБАВИЛИ товар в корзину
+//         cardsData.toggleInCart(card.id,true)
+//       }
+     
+//     }
+//   }
+// }).render(detaildCardExample);
+// // const basketCard = new BasketCard(cloneTemplate(basketCardTemplate)).render(basketCardExample);
+// const modal = new Modal(modalContainer,events).render({
+//   content: detailedCard
+// });

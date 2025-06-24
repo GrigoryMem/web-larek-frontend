@@ -174,7 +174,7 @@ export class BasketCard extends Card<TBasketProduct> {
         }
     }
 
-    set index(value: number) {
+    set  displayIndex(value: number) {
         this.setText(this._index, String(value));
     }
 }

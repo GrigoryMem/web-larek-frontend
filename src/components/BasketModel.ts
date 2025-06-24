@@ -18,9 +18,12 @@ interface IBasketModel {
 
 
 export interface GoodInBasket {
-  total:number;
-  price:number 
+  total:number,
+  price:number,
+  title:string
 }
+
+
 
 export class BasketModel extends Model<IBasketModel> implements IBasketModel{
   protected _items:Map<string,GoodInBasket>

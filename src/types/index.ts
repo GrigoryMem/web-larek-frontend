@@ -51,9 +51,9 @@ export type TIdProduct = Pick<IProduct,'id'> //???? id карточки
 // удалить
 export type TCatalogProduct = Pick<IProductWithCart,'title' | 'id' | 'isInCart'>; //???? для модели
 // удалить
-export type TBasketProduct = Pick<IProduct,'title' | 'price'| 'id'> &{
-  index:number
-}; // для корзины(список товаров к покупке)
+export type TBasketProduct = Pick<IProduct,'title' | 'price'> &{
+  displayIndex:number
+}; // для  отображения товара в корзине(список товаров к покупке)
 
 export type TShortCardProduct = Pick<IProductWithCart,'title' | 'category' | 'price' | 'image'>  // короткая карточка для отображения на гл стр
 // ?????????
