@@ -157,31 +157,48 @@ events.on<IProductWithCart>('preview:changed', (cardData:IProductWithCart) => {
 
 //  подписываемся если нужно открыть корзину (клик по кнопке корзины)
 events.on('basket:open', () => {
-  
-  // получаем список товаров в из модели данных корзины и
+
+  const renderBasket = () => {
+     // получаем список товаров в из модели данных корзины и
   //  обертываем в вью интерфейс карточки корзины
-  const basketCards = basketModel.items.map((item,index) => {
-    console.log("Товар",item)
+  const basketCards = basketModel.items.map((good,index) => {
+    //  выделяем id и остальные данные товара
+    const {id,...otherData} = good;
     const basketGood = {
-      ...item,
-      displayIndex:++index
+      ...otherData,
+      displayIndex:++index // формируем индекс для добавленного товара в корзину
     }
 
-    
-    return new BasketCard(cloneTemplate(basketCardTemplate),{onRemove: () => {
+    const basketGoodView = new BasketCard(cloneTemplate(basketCardTemplate),{onRemove: () => {
       // console.log(basketCardExample.id);
       //  удалить из корзины
-      // пометить в модели данных что товар удален
-      //  счетчик карточки
+      //   // удаляем из  данных корзины
+        basketModel.remove(id);
+        // отмечаем в модели данных что УДАЛИЛИ товар из корзины
+        cardsData.toggleInCart(id,false)
+        
+        if(basketModel.items.length === 0){
+
+          basketModel.clearBasket()
+        }
+  //  заново  рекурсивно создаем список карточек  и пересчитаем общую стоимость
+  //  и отобразим заново корзину каждый раз при удалении товара из моди данныхкорзины
+  //  так же пересчитывает общую стоимость
+          renderBasket();
+     
     }}).render(basketGood);
+
+
+    return basketGoodView
   })
+
 
   const message = document.createElement('div');
   message.textContent = 'Корзина пуста';
 //  составляем  контент для корзины
   const basketContent:IBasketView = {
     items:basketCards.length>0 ? basketCards : [message],
-    totalPrice:basketModel.getTotalSum()
+    totalPrice: basketModel.getTotalSum()
   }
 
  basketView.render(basketContent);
@@ -192,6 +209,12 @@ events.on('basket:open', () => {
        content: basketView.render(basketContent)
       
   });
+
+
+  } // renderBasket окончание
+
+  renderBasket()
+ 
   
 })
 

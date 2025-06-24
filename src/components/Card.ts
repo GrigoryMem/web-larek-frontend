@@ -157,7 +157,7 @@ interface IDetailedCardActions {
 
 //  для  корзины
 interface IBasketCardActions {
-    onRemove: Actions;
+    onRemove: () => void;
   }
 
 export class BasketCard extends Card<TBasketProduct> {
@@ -177,4 +177,10 @@ export class BasketCard extends Card<TBasketProduct> {
     set  displayIndex(value: number) {
         this.setText(this._index, String(value));
     }
+
+    get displayIndex(): number {
+        return Number(this._index.textContent) || 0;
+      }
+      
+    
 }

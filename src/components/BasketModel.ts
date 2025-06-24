@@ -21,11 +21,13 @@ export interface GoodInBasket {
   price:number,
   title:string
 }
+// тип для хранения id товара в модели данных корзины
+type idGood = string;
 
 
 
 export class BasketModel extends Model<IBasketModel> implements IBasketModel{
-  protected _items:Map<string,GoodInBasket>
+  protected _items:Map<idGood,GoodInBasket>
    _order: IOrder  ={
     payment: 'online',
     email: '',
@@ -38,11 +40,15 @@ export class BasketModel extends Model<IBasketModel> implements IBasketModel{
 
   constructor(data:object, events: EventEmitter) {
     super(data, events);
-    this._items = new Map<string,GoodInBasket>();
+    this._items = new Map<idGood,GoodInBasket>();
   }
 
-  get items():GoodInBasket[]{
-    return Array.from(this._items.values());
+  get items():(GoodInBasket & {id:idGood})[] {
+    return Array.from(this._items.entries())
+      .map(([id,dataGood])=>({
+        ...dataGood,
+        id
+      }))
   }
 
   add(id:string,product: GoodInBasket):void{
