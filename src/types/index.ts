@@ -80,16 +80,9 @@ export type TOrderForm = Partial<TBuyerInfo & TBuyerContacts & Pick<IOrder,'item
 
 
 
-//  отображения  
 
-export interface IViewConstructor {  // (интерфейсконструктора -для презентера)
-  new (container:HTMLElement,events?:EventEmitter):IView  // на входе контейнер в него будем выводить
-}
 
-// интерфейс  класса отображения 
- export interface IView {
-  render(data?: object): HTMLElement // устанавливаем данные,вовзращаем контейнер HTMLElement c заполненными данными
-}
+
 
 
 // Результат заказа(Запрос заказа на сервер)

@@ -1,9 +1,19 @@
 import {IEvents} from "./events";
+import {EventEmitter} from "./events";
+//  отображения  
+
+export interface IViewConstructor {  // (интерфейсконструктора -для презентера)
+    new (container:HTMLElement,events?:EventEmitter):IView  // на входе контейнер в него будем выводить
+  }
+// интерфейс  класса отображения 
+export interface IView {
+    render(data?: object): HTMLElement // устанавливаем данные,вовзращаем контейнер HTMLElement c заполненными данными
+  }
 // Component — базовый класс для интерфейса
 /**
  * Базовый компонент - взято из проекта ОНО - позв создавать и работать с вертской
  */
-export abstract class Component<T> {
+export abstract class Component<T>  implements IView {
     protected constructor(protected readonly container: HTMLElement) {
         // Учитывайте что код в конструкторе исполняется ДО всех объявлений в дочернем классе
     }
