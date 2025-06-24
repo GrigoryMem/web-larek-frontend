@@ -116,7 +116,7 @@ events.on<IProductWithCart>('preview:changed', (cardData:IProductWithCart) => {
         if(isNumber(card.price)){  // товар действиельно имеет цену
           //  создаем товар в количестве 1 шт
           const createdGood: GoodInBasket = {
-            total:1,
+            total:1, // на будущее если появится возможность добавлять в корзину несколько товаров одной карточки
             price:card.price as number, // теперь цена точно число
             title:card.title
           }
@@ -134,6 +134,8 @@ events.on<IProductWithCart>('preview:changed', (cardData:IProductWithCart) => {
         //  меняем текст кнопки если данные поменялись
         detailedCard.isInCart = updateCard.isInCart
       }
+      // обновляем количество товаров в корзине на главной странице
+      page.counter = basketModel.items.length
       console.log(updateCard)
     }
   })
@@ -173,13 +175,14 @@ events.on('basket:open', () => {
       //  счетчик карточки
     }}).render(basketGood);
   })
-
+  
   //  отображаем товары в корзине
   modal.render({
     //  здесь должно быть что то еще...
        content: basketView.render({items:basketCards})
       
   });
+  
 })
 
 
