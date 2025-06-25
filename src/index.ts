@@ -51,9 +51,15 @@ const basketView = new BasketView(cloneTemplate(basketTemplate),{onClick: () => 
    
 }});// корзина
 // Формы
-const contacts = new FormContacts(cloneTemplate(formContactsTemplate),events);
-const order = new FormOrder(cloneTemplate(formOrderTemplate),events);
+const formOrder = new FormOrder(cloneTemplate(formOrderTemplate),events);
+const formContacts = new FormContacts(cloneTemplate(formContactsTemplate),events);
 
+console.log(formOrder.render({
+  address:'',
+  payment:'card',
+  valid:false,
+  errors:[]
+}));
 
 
 // Разработка
@@ -231,17 +237,28 @@ events.on('basket:open', () => {
 //   // нужно изменить вью корзины
 // })
 
+// событие о готовности товаров в заказе - если мы выбрали товары и нажали оформить
+  events.on('order:open', () => {
+    const formElement = formOrder.render({
+      address:'',
+      payment:'card',
+      valid:false,
+      errors:[]
+    })
+    
+    modal.render({
+      content:formElement
+    })
+      
+  })
+
 
 events.on<IOrder>('order:ready', (order) => {
   console.log('order:ready', order);
     
 })
 
-// событие о готовности товаров в заказе - если мы выбрали товары и нажали оформить
-events.on<IOrder>('order:open', (order) => {
-  console.log('order:open', order);
-    
-})
+
 
 events.on('formErrors:change', (data) => {
   console.log('formErrors:change', data);

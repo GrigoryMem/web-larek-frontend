@@ -2,7 +2,7 @@ import { Component } from "../base/Component";
 import { IEvents } from "../base/events";
 import { ensureAllElements, ensureElement } from "../../utils/utils";
 import { TBuyerInfo, TBuyerContacts } from "../../types";
-
+import { TPayment } from "../../types";
 interface IFormState{
   valid: boolean; // форма валидна или нет (true/false)
   errors: string[]; // массив ошибок (или одна строка позже)
@@ -22,7 +22,7 @@ abstract class Form<T extends object> extends Component<IFormState> {
   constructor(container: HTMLFormElement, protected events: IEvents) {
     super(container);
     this.container = container; // снова его инициализируем
-    this._submit = ensureElement<HTMLButtonElement>('button-submit', this.container);
+    this._submit = ensureElement<HTMLButtonElement>('.button-submit', this.container);
     this._errors = ensureElement<HTMLElement>('.form__errors', this.container);
 
     this.container.addEventListener('input', (e:Event)=>{
@@ -63,6 +63,10 @@ abstract class Form<T extends object> extends Component<IFormState> {
     this.setText(this._errors, value);
     // список ошибок (пустой или с текстом)
   }
+  clear(): void {
+   
+    this.container.reset();
+  }
 
   render(state: Partial<T> &  IFormState) {
     // разделяем ответственность
@@ -88,17 +92,30 @@ export  class FormOrder extends Form<TBuyerInfo> {
           const target = e.target as HTMLInputElement;
           // делегирование событий
           if(target instanceof HTMLButtonElement && (target.name === 'card' || target.name === 'cash')) {
-            this.onInputChange(`payment`, target.value);
+
+            const buttons =ensureAllElements<HTMLButtonElement>('.button',this._paymentButtons)
+            // убираем класс у всех кнопок:
+            buttons.forEach((btn)=>{ this.toggleClass(btn, 'button_active',false);})
+            // выделяем только кликнутую кнопку
+            this.toggleClass(target, 'button_active',true);
+            // сообщаем об этом, чтобы потом дополнить заказ данными адреса и способа оплаты
+            this.onInputChange(`payment`, target.name);
+            
+            
           }
         })
     }
 // Автозаполнение адреса и платежного способа
-    set adress(value: string) {
-      (this.container.elements.namedItem('adress') as HTMLInputElement).value = value;
+    set address(value: string) {
+      (this.container.elements.namedItem('address') as HTMLInputElement).value = value;
     }
 
-    set payment(value: string) {
-      (this.container.elements.namedItem('payment') as HTMLInputElement).value = value
+    set payment(value: TPayment) {
+      // находим нужную кнопку по имени
+      const button = this.container.elements.namedItem(value) as HTMLButtonElement;
+      //  выделяем кнопку
+      this.toggleClass(button, 'button_active',true);
+     
     }
 }
 

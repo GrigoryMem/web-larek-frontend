@@ -36,7 +36,7 @@ export interface IGoodInBasket extends Omit<IProduct , 'isInCart'>{}
 
 
 
-export type TPayment = 'cash' | 'online' | 'Выберите способ оплаты';
+export type TPayment = 'cash' | 'card' | 'Выберите способ оплаты';
 
 
 
