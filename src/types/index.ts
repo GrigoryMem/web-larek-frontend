@@ -60,8 +60,8 @@ export type TShortCardProduct = Pick<IProductWithCart,'title' | 'category' | 'pr
 export type TBaseCardProduct = Pick<IProductWithCart,'title' | 'description' | 'category' | 'price' | 'image'| 'isInCart'| 'id'>  // открытие модального окна подробного описания товара
 
 // данные пользователя
-export type TBuyerInfo = Pick<IOrder,'address'> & {payment: string}; // для формы выбор способа оплатыи адреса
-
+// export type TBuyerInfo = Pick<IOrder,'address'> & {payment: string}; // для формы выбор способа оплатыи адреса
+export type TBuyerInfo = Pick<IOrder,'address' | 'payment'>  // для формы выбор способа оплатыи адреса
 export type TBuyerContacts = Pick<IOrder, 'phone' | 'email'>;// для формы выбора адреса и телефона
 
 

@@ -43,6 +43,8 @@ export class BasketModel extends Model<IBasketModel> implements IBasketModel{
     this._items = new Map<idGood,GoodInBasket>();
   }
 
+
+
   get items():(GoodInBasket & {id:idGood})[] {
     return Array.from(this._items.entries())
       .map(([id,dataGood])=>({
@@ -115,7 +117,7 @@ export class BasketModel extends Model<IBasketModel> implements IBasketModel{
     //  добавляем в заказ итоговую  стоимость всех заказов
       this._order.total = this.getTotalSum()
       // уведомляем об этом
-      this.emitChanges('goods:in-order', this._order as IOrder)
+      this.emitChanges('order:open', this._order as IOrder)
       // console.log(this._order)
       // если все поля прошли валидацию, отправляем
         //  событие о готовности заказа

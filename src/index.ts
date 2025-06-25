@@ -15,6 +15,7 @@ import { Modal } from './components/common/Modal';
 import { isNumber } from 'lodash';
 import { TBaseCardProduct } from './types/index';
 import { BasketView, IBasketView } from './components/BasketView';
+import { FormContacts,FormOrder } from './components/common/Form';
 
 
 
@@ -27,6 +28,9 @@ const basketCardTemplate = ensureElement<HTMLTemplateElement>("#card-basket");
 const modalContainer = ensureElement<HTMLElement>("#modal-container");
 //  корзина
 const basketTemplate = ensureElement<HTMLTemplateElement>("#basket");
+// формы
+const formContactsTemplate = ensureElement<HTMLTemplateElement>("#contacts");
+const formOrderTemplate = ensureElement<HTMLTemplateElement>("#order");
 
 
 // база
@@ -42,8 +46,13 @@ const basketModel = new BasketModel({},events);
 const page = new PageContainer(document.body,events);// страница
 const modal = new Modal(modalContainer,events) // модалка
 const basketView = new BasketView(cloneTemplate(basketTemplate),{onClick: () => {
-  console.log('wcwcccw')
+    modal.close();
+    basketModel.updateOrderItems() // добавляем товары в заказ
+   
 }});// корзина
+// Формы
+const contacts = new FormContacts(cloneTemplate(formContactsTemplate),events);
+const order = new FormOrder(cloneTemplate(formOrderTemplate),events);
 
 
 
@@ -211,20 +220,16 @@ events.on('basket:open', () => {
        content: basketView.render(basketContent)
       
   });
-
-
   } // renderBasket окончание
 
   renderBasket()
- 
-  
-})
+ })
 
-
-events.on('basket:changed', () => {
-  // если удалили или добавили товар - данные поменялись, 
-  // нужно изменить вью корзины
-})
+//  под удаление
+// events.on('basket:changed', () => {
+//   // если удалили или добавили товар - данные поменялись, 
+//   // нужно изменить вью корзины
+// })
 
 
 events.on<IOrder>('order:ready', (order) => {
@@ -232,9 +237,9 @@ events.on<IOrder>('order:ready', (order) => {
     
 })
 
-// событие о готовности товаров в заказе
-events.on<IOrder>('goods:in-order', (order) => {
-  console.log('goods:in-order', order);
+// событие о готовности товаров в заказе - если мы выбрали товары и нажали оформить
+events.on<IOrder>('order:open', (order) => {
+  console.log('order:open', order);
     
 })
 
