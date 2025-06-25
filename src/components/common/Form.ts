@@ -9,7 +9,7 @@ interface IFormState{
   
 }
 
-type mainDataByer = TBuyerInfo & TBuyerContacts;
+
 
 
 

@@ -63,7 +63,7 @@ export type TBaseCardProduct = Pick<IProductWithCart,'title' | 'description' | '
 // export type TBuyerInfo = Pick<IOrder,'address'> & {payment: string}; // для формы выбор способа оплатыи адреса
 export type TBuyerInfo = Pick<IOrder,'address' | 'payment'>  // для формы выбор способа оплатыи адреса
 export type TBuyerContacts = Pick<IOrder, 'phone' | 'email'>;// для формы выбора адреса и телефона
-
+export type mainDataByer = TBuyerInfo & TBuyerContacts;
 
 
 export type IOrderFields = keyof Partial<TBuyerInfo & TBuyerContacts>

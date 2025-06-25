@@ -4,7 +4,7 @@ import { CardsData } from './components/CardsModel';
 import { Api } from './components/base/api';
 import { API_URL,CDN_URL,testCards } from './utils/constants';
 import { AppApi } from './components/AppApi';
-import { IProduct, IProductWithCart,TBasketProduct } from './types/index';
+import { IProduct, IProductWithCart,TBasketProduct, mainDataByer} from './types/index';
 import { CatalogChangeEvent } from './types/index';
 import { IOrder } from './types';
 import { BasketModel, GoodInBasket } from './components/BasketModel';
@@ -54,12 +54,7 @@ const basketView = new BasketView(cloneTemplate(basketTemplate),{onClick: () => 
 const formOrder = new FormOrder(cloneTemplate(formOrderTemplate),events);
 const formContacts = new FormContacts(cloneTemplate(formContactsTemplate),events);
 
-console.log(formOrder.render({
-  address:'',
-  payment:'card',
-  valid:false,
-  errors:[]
-}));
+
 
 
 // Разработка
@@ -153,7 +148,7 @@ events.on<IProductWithCart>('preview:changed', (cardData:IProductWithCart) => {
       }
       // обновляем количество товаров в корзине на главной странице
       page.counter = basketModel.items.length
-      console.log(updateCard)
+      // console.log(updateCard)
     }
   })
 
@@ -238,11 +233,12 @@ events.on('basket:open', () => {
 // })
 
 // событие о готовности товаров в заказе - если мы выбрали товары и нажали оформить
+//  попросим пользователя заполнить адрес и форму оплаты
   events.on('order:open', () => {
     const formElement = formOrder.render({
       address:'',
       payment:'card',
-      valid:false,
+      valid:false, //для тестов
       errors:[]
     })
     
@@ -251,6 +247,39 @@ events.on('basket:open', () => {
     })
       
   })
+//  подтверждаем форму заполнения адреса и оплаты
+  events.on('order:submit', () => {
+    modal.close()
+    const formElement = formContacts.render({
+      phone:'',
+      email:'',
+      valid:false, //для тестов
+      errors:[]
+    })
+    
+    modal.render({
+      content:formElement
+    })
+  })
+
+
+  // следим за изменением полей всех форм
+  //  и подписываемсяна сабмит форм
+  const namesForms = ['order','contacts']
+  namesForms.forEach((nameForm) => {
+    const regex = new  RegExp(`^${nameForm}\\..*:change`)
+    // ключи address' | 'payment или 'phone' | 'email'
+    events.on(regex , (data:{field: keyof mainDataByer,value:string}) => {
+      // console.log('объект ввода', data:);
+      // const {field, value} = data
+      // передадим данные в модель данных корзины для валидации и заполнения
+      // данных заказа покупателя
+      basketModel.setOrderField(data.field,data.value)
+
+    })
+  })
+
+  
 
 
 events.on<IOrder>('order:ready', (order) => {
@@ -260,8 +289,29 @@ events.on<IOrder>('order:ready', (order) => {
 
 
 
-events.on('formErrors:change', (data) => {
-  console.log('formErrors:change', data);
+
+//  если есть ошибки ввалидации форм
+events.on('formErrors:change', (errors:Partial<mainDataByer>) => {
+  
+  // let checkValid:any
+  //  если есть ошибки щзаполнения => ,блокируем кнопки
+  //  соответствующих форм
+    // 1.  если ощибки в форме оплате или адресе
+    const {address,payment} = errors
+    // блокировка кнопки
+    formOrder.valid =!address && !payment
+  
+    //  если ошибки действительно есть, отображаем их
+    formOrder.errors =Object.values({address,payment})
+      .filter(prop=>!!prop).join('')
+  
+  // 2.  если ощибки в почте или телефоне
+    const {phone,email} = errors
+    formContacts.valid =!phone && !email
+  
+    //  если ошибки действительно есть, отображаем их
+    formContacts.errors =Object.values({phone,email})
+      .filter(prop=>!!prop).join('')
 })
 
 //  реагируем на окрытие к-л модального окна
