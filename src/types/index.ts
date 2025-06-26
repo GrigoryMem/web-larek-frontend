@@ -40,10 +40,7 @@ export type TPayment = 'cash' | 'card' | 'Выберите способ опла
 
 
 
-//  список товаров для просмотра на глваной странице
-export interface ICardProdList {
-  items:TShortCardProduct[]
-} 
+
 
 //  различные варианты карточки
 export type TIdProduct = Pick<IProduct,'id'> //???? id карточки
@@ -56,7 +53,7 @@ export type TBasketProduct = Pick<IProduct,'title' | 'price'> &{
 }; // для  отображения товара в корзине(список товаров к покупке)
 
 export type TShortCardProduct = Pick<IProductWithCart,'title' | 'category' | 'price' | 'image'>  // короткая карточка для отображения на гл стр
-// ?????????
+
 export type TBaseCardProduct = Pick<IProductWithCart,'title' | 'description' | 'category' | 'price' | 'image'| 'isInCart'| 'id'>  // открытие модального окна подробного описания товара
 
 // данные пользователя

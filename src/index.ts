@@ -4,7 +4,7 @@ import { CardsData } from './components/CardsModel';
 import { Api } from './components/base/api';
 import { API_URL,CDN_URL,testCards } from './utils/constants';
 import { AppApi } from './components/AppApi';
-import { IProduct, IProductWithCart,TBasketProduct, mainDataByer} from './types/index';
+import {  IProductWithCart, mainDataByer,IOrderFields} from './types/index';
 import { CatalogChangeEvent } from './types/index';
 import { IOrder } from './types';
 import { BasketModel, GoodInBasket } from './components/BasketModel';
@@ -176,60 +176,16 @@ events.on<IProductWithCart>('preview:changed', (cardData:IProductWithCart) => {
 //  подписываемся если нужно открыть корзину (клик по кнопке корзины)
 events.on('basket:open', () => {
 
-  const renderBasket = () => {
-     // получаем список товаров в из модели данных корзины и
-  //  обертываем в вью интерфейс карточки корзины
-  const basketCards = basketModel.items.map((good,index) => {
-    //  выделяем id и остальные данные товара
-    const {id,...otherData} = good;
-    const basketGood = {
-      ...otherData,
-      displayIndex:++index // формируем индекс для добавленного товара в корзину
-    }
-
-    const basketGoodView = new BasketCard(cloneTemplate(basketCardTemplate),{onRemove: () => {
-      // console.log(basketCardExample.id);
-      //  удалить из корзины
-      //   // удаляем из  данных корзины
-        basketModel.remove(id);
-        // отмечаем в модели данных что УДАЛИЛИ товар из корзины
-        cardsData.toggleInCart(id,false)
-        
-        if(basketModel.items.length === 0){
-
-          basketModel.clearBasket()
-        }
-  //  заново  рекурсивно создаем список карточек  и пересчитаем общую стоимость
-  //  и отобразим заново корзину каждый раз при удалении товара из моди данныхкорзины
-  //  так же пересчитывает общую стоимость
-          renderBasket();
-     
-    }}).render(basketGood);
-
-
-    return basketGoodView
-  })
-
-
-  const message = document.createElement('div');
-  message.textContent = 'Корзина пуста';
-//  составляем  контент для корзины
-  const basketContent:IBasketView = {
-    items:basketCards.length>0 ? basketCards : [message], // если товаров нет то показываем сообщение
-    totalPrice: basketModel.getTotalSum()
-  }
-
- basketView.render(basketContent);
-  
+ 
   //  отображаем содержимое корзины
   modal.render({
    
-       content: basketView.render(basketContent)
+       content: renderBasket()
       
   });
-  } // renderBasket окончание
+  
 
-  renderBasket()
+
  })
 
 //  под удаление
@@ -297,9 +253,11 @@ events.on('basket:open', () => {
         })
       })
       .finally(() => {
+          //  убираем все товары из корзины визуально
         basketModel.clearBasket();
-        //  убираем все товары из корзины
-
+        page.counter = basketModel.items.length
+      
+        
       })
   })
 
@@ -320,34 +278,23 @@ events.on('basket:open', () => {
     })
   })
 
-  
-
-
-// events.on<IOrder>('order:ready', (order) => {
-//   console.log('order:ready', order);
-    
-// })
-
-
-
-
-//  если есть ошибки ввалидации форм
-events.on('formErrors:change', (errors:Partial<mainDataByer>) => {
-  
+  //  если есть ошибки ввалидации форм
+events.on('formErrors:change', ({errors}:{errors:Record<IOrderFields, string>}) => {
+  console.log('📢 Событие formErrors:change:', errors);
   // let checkValid:any
   //  если есть ошибки щзаполнения => ,блокируем кнопки
   //  соответствующих форм
     // 1.  если ощибки в форме оплате или адресе
-    const {address,payment} = errors
+    const {address,payment,phone,email} = errors
     // блокировка кнопки
     formOrder.valid =!address && !payment
-  
+    
     //  если ошибки действительно есть, отображаем их
     formOrder.errors =Object.values({address,payment})
       .filter(prop=>!!prop).join('')
   
   // 2.  если ощибки в почте или телефоне
-    const {phone,email} = errors
+  
     formContacts.valid =!phone && !email
   
     //  если ошибки действительно есть, отображаем их
@@ -531,3 +478,51 @@ events.on('modal:close', () => {
 // const modal = new Modal(modalContainer,events).render({
 //   content: detailedCard
 // });
+
+//  отображение корзины
+function renderBasket()  {
+  // получаем список товаров в из модели данных корзины и
+//  обертываем в вью интерфейс карточки корзины
+  const basketCards = basketModel.items.map((good,index) => {
+ //  выделяем id и остальные данные товара
+  const {id,...otherData} = good;
+  const basketGood = {
+    ...otherData,
+    displayIndex:++index // формируем индекс для добавленного товара в корзину
+  }
+  //  вставляем контент в карточку корзины и вставляем коллбэк удаления
+  const basketGoodView = new BasketCard(cloneTemplate(basketCardTemplate),{onRemove: () => {
+   // console.log(basketCardExample.id);
+   //  удалить из корзины
+   //   // удаляем из  данных корзины
+     basketModel.remove(id);
+     // отмечаем в модели данных что УДАЛИЛИ товар из корзины
+     cardsData.toggleInCart(id,false)
+     
+     if(basketModel.items.length === 0){
+
+       basketModel.clearBasket()
+     }
+    //  заново  рекурсивно создаем список карточек  и пересчитаем общую стоимость
+    //  и отобразим заново корзину каждый раз при удалении товара из моди данныхкорзины
+    //  так же пересчитывает общую стоимость
+       renderBasket();
+  
+  }}).render(basketGood);
+
+
+    return basketGoodView
+  })
+
+
+  const message = document.createElement('div');
+  message.textContent = 'Корзина пуста';
+  //  составляем  контент для корзины
+  const basketContent:IBasketView = {
+  items:basketCards.length>0 ? basketCards : [message], // если товаров нет то показываем сообщение
+  totalPrice: basketModel.getTotalSum()
+  }
+
+  return basketView.render(basketContent)
+//  basketView.render(basketContent);
+} // renderBasket окончание

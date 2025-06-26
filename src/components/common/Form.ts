@@ -3,15 +3,12 @@ import { IEvents } from "../base/events";
 import { ensureAllElements, ensureElement } from "../../utils/utils";
 import { TBuyerInfo, TBuyerContacts } from "../../types";
 import { TPayment } from "../../types";
+
 interface IFormState{
   valid: boolean; // форма валидна или нет (true/false)
   errors: string[]; // массив ошибок (или одна строка позже)
   
 }
-
-
-
-
 
 abstract class Form<T extends object> extends Component<IFormState> {
   protected _submit: HTMLButtonElement;
@@ -60,6 +57,7 @@ abstract class Form<T extends object> extends Component<IFormState> {
   }
 
   set errors(value: string) {
+    console.log('✉️ Ошибка в форму:', value);
     this.setText(this._errors, value);
     // список ошибок (пустой или с текстом)
   }

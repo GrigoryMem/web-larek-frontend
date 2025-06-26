@@ -3,13 +3,7 @@ import _ from 'lodash';
 import { Model } from "./base/Model";
 import {IOrder, IProductWithCart,IProduct,TIdProduct, TOrderForm,IOrderFields} from '../types/index';
 import { IEvents } from './base/events';
-// export interface ICardData {
-//   total:number,
-//   items:IProductWithCart[]
-//   basket: string[];//????? 
-//   preview:string | null;
-//   order:IOrder | null;
-// }
+
 
 export interface CatalogModel {
   cards: IProductWithCart[];
@@ -18,25 +12,16 @@ export interface CatalogModel {
   toggleInCart(id:string,toggle:boolean):void
   setPreview(id:string):void;
   setCards(cards:IProduct[]):void
-  getProduct(id:string):void // чтобы получить при рендере списков
+  getProduct(id:string):IProductWithCart|undefined // чтобы получить при рендере списков
 }
 
 
-
-
-// Код ниже следует убрать отсюда
-// модель данных
-
-
-
-  export class CardsData extends Model<CatalogModel>{
+export class CardsData extends Model<CatalogModel>{
 
     protected _cards: IProductWithCart[] = [];
     preview: string | null = null;
-    
     protected _total:number = 0;
     
-
     setPreview(id:string):void{
       this.preview = id
       const card = this.getProduct(id);
