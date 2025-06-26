@@ -159,6 +159,7 @@ export class BasketModel extends Model<IBasketModel> implements IBasketModel{
       total: 0,
       items: []
     }
+    this.events.emit('basket:changed')
   }
 
  

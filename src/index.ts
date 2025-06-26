@@ -269,22 +269,28 @@ events.on('basket:open', () => {
 
   //  отправляем окончательный заказ на сервер
   events.on('contacts:submit', () => {
-    console.log("click")
+    
     // получаем готовый заказ из корзины
     const order = basketModel.getReadyOrder()
-   
+    appApi.sendOrder=()=>Promise.reject({error:'ошибка отправки заказа'})
     //  отправляем заказ на сервер
     appApi.sendOrder(order)
       .then((result) => {
         console.log(result)
-         const commonPrice = basketModel.getTotalSum();
+        const commonPrice = basketModel.getTotalSum();
         const resultWindow = success.render({totalPrice:commonPrice});
         modal.render({
           content:resultWindow
         })
+        basketModel.clearBasket();
+        
     })
       .catch((error) => {
         console.log(error)
+        const resultWindow = success.render({titleError:error});
+        modal.render({
+          content:resultWindow
+        })
       })
   })
 

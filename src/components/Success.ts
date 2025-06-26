@@ -1,8 +1,14 @@
 import {Component} from './base/Component';
 import {ensureElement} from '../utils/utils';
 
-interface ISuccess {
-  totalPrice:number;
+
+type TErorr = {
+  error:string
+}
+
+interface IStateOrder {
+  totalPrice?:number;
+  titleError?:TErorr;
 }
 
 
@@ -10,11 +16,13 @@ interface ISuccessActions {
   onClick: ()=>void;
 }
 
-export class Success extends Component<ISuccess>{
+export class Success extends Component<IStateOrder>{
   protected _totalPrice:HTMLElement;
   protected _button:HTMLElement;
+  protected _title:HTMLElement;
   constructor(container:HTMLElement,actions?:ISuccessActions){
-      super(container)
+      super(container);
+      this._title = ensureElement('.order-success__title',container) as HTMLElement;
       this._totalPrice = ensureElement('.order-success__description',container) as HTMLElement;
       this._button = ensureElement('.order-success__close',container) as HTMLElement;
 
@@ -25,6 +33,13 @@ export class Success extends Component<ISuccess>{
   }
 
   set totalPrice(value:number) {
-    this.setText(this._totalPrice, value);
+    if(value){
+      this.setText(this._totalPrice, value);
+    }
+  }
+  set titleError(data:TErorr ) {
+    if(data){
+      this.setText(this._title, data.error);
+    }
   }
 }
