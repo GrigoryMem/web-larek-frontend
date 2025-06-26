@@ -16,6 +16,7 @@ import { isNumber } from 'lodash';
 import { TBaseCardProduct } from './types/index';
 import { BasketView, IBasketView } from './components/BasketView';
 import { FormContacts,FormOrder } from './components/common/Form';
+import { Success } from './components/Success';
 
 
 
@@ -31,6 +32,8 @@ const basketTemplate = ensureElement<HTMLTemplateElement>("#basket");
 // формы
 const formContactsTemplate = ensureElement<HTMLTemplateElement>("#contacts");
 const formOrderTemplate = ensureElement<HTMLTemplateElement>("#order");
+//  результата заказа
+const successTemplate = ensureElement<HTMLTemplateElement>("#success");
 
 
 // база
@@ -53,7 +56,8 @@ const basketView = new BasketView(cloneTemplate(basketTemplate),{onClick: () => 
 // Формы
 const formOrder = new FormOrder(cloneTemplate(formOrderTemplate),events);
 const formContacts = new FormContacts(cloneTemplate(formContactsTemplate),events);
-
+//  результат заказа
+const success = new Success(cloneTemplate(successTemplate));
 
 
 
@@ -250,7 +254,7 @@ events.on('basket:open', () => {
 //  подтверждаем форму заполнения адреса и оплаты
   events.on('order:submit', () => {
     modal.close()
-    
+    //   очистка формы
     const formElement = formContacts.render({
       phone:'',
       email:'',
@@ -261,6 +265,27 @@ events.on('basket:open', () => {
     modal.render({
       content:formElement
     })
+  })
+
+  //  отправляем окончательный заказ на сервер
+  events.on('contacts:submit', () => {
+    console.log("click")
+    // получаем готовый заказ из корзины
+    const order = basketModel.getReadyOrder()
+   
+    //  отправляем заказ на сервер
+    appApi.sendOrder(order)
+      .then((result) => {
+        console.log(result)
+         const commonPrice = basketModel.getTotalSum();
+        const resultWindow = success.render({totalPrice:commonPrice});
+        modal.render({
+          content:resultWindow
+        })
+    })
+      .catch((error) => {
+        console.log(error)
+      })
   })
 
 
@@ -283,10 +308,10 @@ events.on('basket:open', () => {
   
 
 
-events.on<IOrder>('order:ready', (order) => {
-  console.log('order:ready', order);
+// events.on<IOrder>('order:ready', (order) => {
+//   console.log('order:ready', order);
     
-})
+// })
 
 
 

@@ -12,7 +12,8 @@ interface IBasketModel {
   validateOrder():boolean;
   updateOrderItems():void;
   clearBasket():void;
-  getTotalSum(): number
+  getTotalSum(): number;
+  getReadyOrder():IOrder
 }
 
 
@@ -70,6 +71,10 @@ export class BasketModel extends Model<IBasketModel> implements IBasketModel{
     this._changed()
     }
 
+    getReadyOrder():IOrder{
+      return this._order
+    }
+
     setOrderField(field:IOrderFields, value:string):void{
       //  вводим в заказ в значение поля, имя поля 
       // формы которые совпадаем с полем заказа -значение поля вводы
@@ -81,7 +86,7 @@ export class BasketModel extends Model<IBasketModel> implements IBasketModel{
             //  т е валидация прошла успешно
             // → отправляется событие order:ready.
             // и отправляемзаказ
-            this.emitChanges('order:ready', this._order as IOrder)
+            // this.emitChanges('order:ready', this._order as IOrder)
           
         }
         
