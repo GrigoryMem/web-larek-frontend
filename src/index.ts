@@ -255,6 +255,8 @@ events.on('basket:open', () => {
   events.on('order:submit', () => {
     modal.close()
     //   очистка формы
+    formOrder.clear()
+    
     const formElement = formContacts.render({
       phone:'',
       email:'',
@@ -269,9 +271,10 @@ events.on('basket:open', () => {
 
   //  отправляем окончательный заказ на сервер
   events.on('contacts:submit', () => {
-    
+    // очищаем предыдущую форму
+    formContacts.clear();
     // получаем готовый заказ из корзины
-    const order = basketModel.getReadyOrder()
+    const order:IOrder = basketModel.getReadyOrder()
     appApi.sendOrder=()=>Promise.reject({error:'ошибка отправки заказа'})
     //  отправляем заказ на сервер
     appApi.sendOrder(order)
@@ -282,15 +285,18 @@ events.on('basket:open', () => {
         modal.render({
           content:resultWindow
         })
-        basketModel.clearBasket();
-        
-    })
+
+      })
       .catch((error) => {
         console.log(error)
         const resultWindow = success.render({titleError:error});
         modal.render({
           content:resultWindow
         })
+      })
+      .finally(() => {
+        basketModel.clearBasket();
+
       })
   })
 
