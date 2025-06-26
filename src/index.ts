@@ -250,6 +250,7 @@ events.on('basket:open', () => {
 //  подтверждаем форму заполнения адреса и оплаты
   events.on('order:submit', () => {
     modal.close()
+    
     const formElement = formContacts.render({
       phone:'',
       email:'',
