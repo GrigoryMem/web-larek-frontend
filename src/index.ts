@@ -57,7 +57,9 @@ const basketView = new BasketView(cloneTemplate(basketTemplate),{onClick: () => 
 const formOrder = new FormOrder(cloneTemplate(formOrderTemplate),events);
 const formContacts = new FormContacts(cloneTemplate(formContactsTemplate),events);
 //  результат заказа
-const success = new Success(cloneTemplate(successTemplate));
+const success = new Success(cloneTemplate(successTemplate),{onClick: () => {
+  modal.close();
+}});
 
 
 
@@ -275,7 +277,7 @@ events.on('basket:open', () => {
     formContacts.clear();
     // получаем готовый заказ из корзины
     const order:IOrder = basketModel.getReadyOrder()
-    appApi.sendOrder=()=>Promise.reject({error:'ошибка отправки заказа'})
+    // appApi.sendOrder=()=>Promise.rejec t({error:'ошибка отправки заказа'})
     //  отправляем заказ на сервер
     appApi.sendOrder(order)
       .then((result) => {
@@ -296,6 +298,7 @@ events.on('basket:open', () => {
       })
       .finally(() => {
         basketModel.clearBasket();
+        //  убираем все товары из корзины
 
       })
   })
