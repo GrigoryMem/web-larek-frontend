@@ -29,7 +29,7 @@ abstract class Card<T extends object> extends Component<T> {
         this.setText(this._price, value);
     }
 
-    get price():number | string{
+    get price():number | string {
         const parsed = Number(this._price.textContent);
         return isNaN(parsed) ? 'Бесценный товар' : parsed;
     }
