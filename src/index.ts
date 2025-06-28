@@ -340,6 +340,8 @@ function renderBasket()  {
      basketModel.remove(id);
      // отмечаем в модели данных что УДАЛИЛИ товар из корзины
      cardsData.toggleInCart(id,false)
+    //  исправляем счетчик корзины// обновляем количество товаров в корзине на главной странице
+      page.counter = basketModel.items.length
      
      if(basketModel.items.length === 0){
 
