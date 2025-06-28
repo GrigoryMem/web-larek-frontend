@@ -244,8 +244,13 @@ events.on('basket:open', () => {
           content:resultWindow
         })
          //  елсли заказ успешно создан
+        // удаляем отметки у карточек что товар в корзине
+        order.items.forEach((id) => {
+          cardsData.toggleInCart(id,false)
+        })
         //  очистка корзины
          basketModel.clearBasket();
+
         //  обнуляем счетчиктоваров в корзине
          page.counter = basketModel.items.length
 
