@@ -28,12 +28,12 @@ export class Modal extends Component<IModalData> {
     }
 
     open() {
-        this.container.classList.add('modal_active'); // Показать модалку
+        this.toggleClass(this.container, 'modal_active', true);// Показать модалку
         this.events.emit('modal:open'); //  сообщаем что модальное окно открыто
     }
 
     close() {
-        this.container.classList.remove('modal_active');// скрыввем модалку
+        this.toggleClass(this.container, 'modal_active', false);// скрыввем модалку
         this.content = null; // очищаем данные старой формы
         // Это не про сборку мусора, а про чистоту интерфейса — чтобы модалка начинала с нуля при каждом открытии.M
         this.events.emit('modal:close'); // сообщаем что модальное окно закрыто

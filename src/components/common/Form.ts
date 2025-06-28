@@ -52,7 +52,8 @@ abstract class Form<T extends object> extends Component<IFormState> {
   }
 
   set valid(value: boolean) { // блокировать кнопку или нет
-    this._submit.disabled = !value;
+    this.setDisabled(this._submit, !value);
+   
     // valid	Можно ли отправить форму? (true/false)
   }
 
