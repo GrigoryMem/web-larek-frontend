@@ -37,13 +37,9 @@ export class BasketView extends Component<IBasketView> {
 
   set totalPrice(value:number) {
     this.setText(this._totalPrice, value.toString());
-  
-// если общая стоимость ноль то блокируем кнопку
-    if(value ===0){
-      this.setDisabled(this._button,true)
-    }else{
-      this.setDisabled(this._button,false)
-    }
+  // если общая стоимость ноль то блокируем кнопку
+   this.setDisabled(this._button,value ===0)
+   
   }
  
 }
