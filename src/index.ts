@@ -243,6 +243,11 @@ events.on('basket:open', () => {
         modal.render({
           content:resultWindow
         })
+         //  елсли заказ успешно создан
+        //  очистка корзины
+         basketModel.clearBasket();
+        //  обнуляем счетчиктоваров в корзине
+         page.counter = basketModel.items.length
 
       })
       .catch((error) => {
@@ -253,10 +258,8 @@ events.on('basket:open', () => {
         })
       })
       .finally(() => {
-          //  убираем все товары из корзины визуально
-        basketModel.clearBasket();
-        page.counter = basketModel.items.length
-      
+         
+        console.log("✔️ Заказ обработан. (успешно или с ошибкой)");
         
       })
   })
