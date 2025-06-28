@@ -251,7 +251,7 @@ events.on('basket:open', () => {
 
       })
       .catch((error) => {
-        console.log(error)
+        console.error(error)
         const resultWindow = success.render({titleError:error});
         modal.render({
           content:resultWindow
