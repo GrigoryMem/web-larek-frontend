@@ -112,6 +112,9 @@ export  class FormOrder extends Form<TBuyerInfo> {
     set payment(value: TPayment) {
       // находим нужную кнопку по имени
       const button = this.container.elements.namedItem(value) as HTMLButtonElement;
+      const buttons =ensureAllElements<HTMLButtonElement>('.button',this._paymentButtons)
+      // убираем класс у всех кнопок
+      buttons.forEach((btn) => this.toggleClass(btn, 'button_active', false));
       //  выделяем кнопку
       this.toggleClass(button, 'button_active',true);
      
