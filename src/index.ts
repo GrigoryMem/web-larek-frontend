@@ -233,6 +233,7 @@ events.on('basket:open', () => {
     formContacts.clear();
     // получаем готовый заказ из корзины
     const order:IOrder = basketModel.getReadyOrder()
+    console.log(order)
     // appApi.sendOrder=()=>Promise.rejec t({error:'ошибка отправки заказа'})
     //  отправляем заказ на сервер
     appApi.sendOrder(order)

@@ -83,10 +83,12 @@ abstract class Form<T extends object> extends Component<IFormState> {
 
 export  class FormOrder extends Form<TBuyerInfo> {
     protected _paymentButtons:  HTMLElement;
+    protected _buttons:HTMLButtonElement[];
 
     constructor(container: HTMLFormElement, events: IEvents) {
         super(container, events);
         this._paymentButtons = ensureElement<HTMLElement>('.order__buttons', this.container);
+        this._buttons =ensureAllElements<HTMLButtonElement>('.button',this._paymentButtons)
         this._paymentButtons.addEventListener('click', (e: Event) => {
           const target = e.target as HTMLInputElement;
           // делегирование событий
@@ -94,7 +96,8 @@ export  class FormOrder extends Form<TBuyerInfo> {
 
             const buttons =ensureAllElements<HTMLButtonElement>('.button',this._paymentButtons)
             // убираем класс у всех кнопок:
-            buttons.forEach((btn)=>{ this.toggleClass(btn, 'button_active',false);})
+           // убираем класс рамки у всех кнопок
+            this.clearButtonsStatus();
             // выделяем только кликнутую кнопку
             this.toggleClass(target, 'button_active',true);
             // сообщаем об этом, чтобы потом дополнить заказ данными адреса и способа оплаты
@@ -112,12 +115,16 @@ export  class FormOrder extends Form<TBuyerInfo> {
     set payment(value: TPayment) {
       // находим нужную кнопку по имени
       const button = this.container.elements.namedItem(value) as HTMLButtonElement;
-      const buttons =ensureAllElements<HTMLButtonElement>('.button',this._paymentButtons)
-      // убираем класс у всех кнопок
-      buttons.forEach((btn) => this.toggleClass(btn, 'button_active', false));
-      //  выделяем кнопку
+   
+      // убираем класс рамки у всех кнопок
+      this.clearButtonsStatus();
+      //  выделяем  кликнутую кнопку
       this.toggleClass(button, 'button_active',true);
      
+    }
+
+    protected clearButtonsStatus(): void {
+      this._buttons.forEach((btn) => this.toggleClass(btn, 'button_active', false));
     }
 }
 
