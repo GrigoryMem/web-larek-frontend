@@ -101,13 +101,29 @@ export class BasketModel extends Model<IBasketModel> implements IBasketModel{
       payment: 'Выберите способ оплаты'
     } 
 
+    const emailPattern = /^[\w.-]+@[a-z\d.-]+\.[a-z]{2,}$/i;
+    const telPattern = /^(\+7|8)\d{10}$/
+
     // если поле пустое -  выдаем ошибку в объект ошибок
     for(const key of Object.keys(fieldsTovalidate) as IOrderFields[]){
-      if(!this._order[key]){
+      const value = (this._order[key] || '').trim();
+      if(!value){
         errors[key] = fieldsTovalidate[key];
-      
+        continue;// не валидируем на тип поля если оно пустое
+      }
+        //  если поле заполнено валидируем регул
+      //  проверка соответствия типам ввода полей 
+      //  если поле заполнено, можно проверить соответсвует ли оно своему типу
+      if(key ==='email' && !emailPattern.test(value)){
+        errors.email = 'Некорректно введен Email'
+      }
+
+       if(key === 'phone' && !telPattern.test(value)){
+       errors.email = 'Некорректно введен телефон'
       }
     }
+
+
   
     this.formErrors = errors
     this.emitChanges('formErrors:change', {errors});
