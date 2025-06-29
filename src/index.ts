@@ -300,7 +300,7 @@ events.on('formErrors:change', ({errors}:{errors:Record<IOrderFields, string>}) 
     
     //  если ошибки действительно есть, отображаем их
     formOrder.errors =Object.values({address,payment})
-      .filter(prop=>!!prop).join('')
+      .filter(prop=>!!prop).join('; ')
   
   // 2.  если ощибки в почте или телефоне
   
@@ -308,7 +308,7 @@ events.on('formErrors:change', ({errors}:{errors:Record<IOrderFields, string>}) 
   
     //  если ошибки действительно есть, отображаем их
     formContacts.errors =Object.values({phone,email})
-      .filter(prop=>!!prop).join('')
+      .filter(prop=>!!prop).join('; ')
 })
 
 //  реагируем на окрытие к-л модального окна

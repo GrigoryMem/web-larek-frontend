@@ -10,6 +10,12 @@
     flex-grow: 1;
   }
 
+  &__errors {
+    color: red;
+    font-weight: 700;
+    font-size: 20px;
+  }
+
   &__input {
     background: transparent;
     color: white;
