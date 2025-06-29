@@ -245,10 +245,11 @@ events.on('basket:open', () => {
           content:resultWindow
         })
          //  елсли заказ успешно создан
-        // удаляем отметки у карточек что товар в корзине
-        order.items.forEach((id) => {
-          cardsData.toggleInCart(id,false)
-        })
+        // удаляем отметки у карточек товаров, что товар в корзине
+        //  т к товар уже покупается
+        const idGoods = order.items
+        cardsData.сlearCardStatuses(idGoods)
+       
         //  очистка корзины
          basketModel.clearBasket();
 

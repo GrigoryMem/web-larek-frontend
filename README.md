@@ -263,7 +263,8 @@ emitChanges(event: string, payload?: object) - данный метод дает 
 - setPreview(id:string):void - принимает id карточки товара и устанавливается его в поле preview.
 - toggleInCart(id:string,toggle:boolean) - принимает id объекта карточки товара и отмечает, что этот объект товара был добавлен в корзину или нет, используя поле isInCart: boolean;
 - метод setCards(cards:IProduct[]) - принимает массив карточек товаров IProduct[] и устанавливает в поле \_cards массив IProductWithCart[] с отметкой isInCart: boolean, подсказывающей есть ли товар в корзине;
-- getProduct(id:string):IProductWithCart|undefined - получает одну карточку из списка карточек, по id параметру
+- getProduct(id:string):IProductWithCart|undefined - получает одну карточку из списка карточек, по id параметру;
+- сlearCardStatuses(idCards: string[]):void - массово по выбранным id карточек удаляет отметку о присутствии товара в корзине,когда заказ создан и  успешно отправляется на сервер;idCards: string[] - передает id товаров которые были в корзине.
 - геттер cards():IProductWithCart[] будет получать карточки с отметкой о том, есть ли товар в корзине;
 - сеттер get total():number - возвращает количество карточек содержащихся в модели данных.
 

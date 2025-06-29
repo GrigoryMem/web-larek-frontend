@@ -66,6 +66,13 @@ export class CardsData extends Model<CatalogModel>{
       if(!card) return;
       return card
     }
+    
+    сlearCardStatuses(idCards: string[]):void{
+      idCards.forEach(id=>{
+        //  сохраняем конекст this
+        this.toggleInCart(id,false) // удаляем отметку корзины у 
+      })
+    }
 
     get cards():IProductWithCart[]{
       return this._cards;
