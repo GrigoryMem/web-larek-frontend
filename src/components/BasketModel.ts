@@ -110,6 +110,7 @@ export class BasketModel extends Model<IBasketModel> implements IBasketModel{
       if(!value){
         errors[key] = fieldsTovalidate[key];
         continue;// не валидируем на тип поля если оно пустое
+        // а только сообщаем что оно не заполнено
       }
         //  если поле заполнено валидируем регул
       //  проверка соответствия типам ввода полей 

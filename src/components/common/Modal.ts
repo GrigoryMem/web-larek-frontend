@@ -28,16 +28,31 @@ export class Modal extends Component<IModalData> {
     }
 
     open() {
-        this.toggleClass(this.container, 'modal_active', true);// Показать модалку
+       this._toggleModal();// Показать модалку
+        //  устанавливаемслушатель сохраняя контекст метода _handleEscape
+        document.addEventListener('keydown',this._handleEscape.bind(this));
         this.events.emit('modal:open'); //  сообщаем что модальное окно открыто
     }
 
     close() {
-        this.toggleClass(this.container, 'modal_active', false);// скрыввем модалку
+        this._toggleModal(false);// скрываем модалку
         this.content = null; // очищаем данные старой формы
         // Это не про сборку мусора, а про чистоту интерфейса — чтобы модалка начинала с нуля при каждом открытии.M
+        //  удаляемслушать сохрання контекст метода _handleEscape
+        document.removeEventListener('keydown',this._handleEscape.bind(this));
         this.events.emit('modal:close'); // сообщаем что модальное окно закрыто
     }
+
+    protected _toggleModal(state:boolean = true) {
+        //  открываем или закрываем модалку в зависимости от переключателя state
+        this.toggleClass(this.container, 'modal_active', state);
+    }
+
+    protected _handleEscape(event:KeyboardEvent){
+            if(event.key ==='Escape'){
+                this.close();
+            }
+    }   
 
     render(data: IModalData): HTMLElement {
         // принцип раделения ответственности???
@@ -45,4 +60,6 @@ export class Modal extends Component<IModalData> {
         this.open(); // открываем модалку
         return this.container; // возвращаем корневой элемент
     }
+
+
 }
