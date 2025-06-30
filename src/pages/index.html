@@ -201,7 +201,8 @@
 		<!--  темплейт карточки -->
 		<template id="card-catalog">
 			<button class="gallery__item card">
-				<span class="card__category card__category_soft">софт-скил</span>
+				<!--  card__category_soft убрано -->
+				<span class="card__category">софт-скил</span>
 				<h2 class="card__title">+1 час в сутках</h2>
 				<img
 					class="card__image"
@@ -285,7 +286,11 @@
 					</label>
 				</div>
 				<div class="modal__actions">
-					<button type="submit" disabled class="button order__button button-submit">
+					<button
+						type="submit"
+						disabled
+						class="button order__button button-submit"
+					>
 						Далее
 					</button>
 					<span class="form__errors"></span>
@@ -316,7 +321,9 @@
 					</label>
 				</div>
 				<div class="modal__actions">
-					<button type="submit" disabled class="button button-submit">Оплатить</button>
+					<button type="submit" disabled class="button button-submit">
+						Оплатить
+					</button>
 					<span class="form__errors"></span>
 				</div>
 			</form>

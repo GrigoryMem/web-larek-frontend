@@ -56,9 +56,22 @@ abstract class CardPreview<T extends object> extends Card<T>{
       }
 
       set category(value: string) {
+            // заполняем текст категории
+            this.setText(this._category, value);
+            const categories:Record<string,string> ={
+                'софт-скил':'card__category_soft',
+                'другое':'card__category_other',
+                'хард-скил':'card__category_hard',
+                'дополнительное':'card__category_additional',
+                'кнопка':'card__category_button'
+            }
 
-          this.setText(this._category, value);
-        
+         
+            // если ключ совпадает со значением категории ставим нужный классв противном 
+            // случае использумем вариант по умолчанию
+            const className = categories[value] ?? 'card__category_soft'
+            this.toggleClass(this._category,className)
+            
       }
     
       set image(value: string) {
