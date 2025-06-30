@@ -26,7 +26,7 @@ abstract class Card<T extends object> extends Component<T> {
     }
 
     set price(value: number | string) {
-        this.setText(this._price, value);
+        this.setText(this._price, value+' синапсов');
     }
 
     get price():number | string {
