@@ -52,6 +52,7 @@ export class CardsData extends Model<CatalogModel>{
       this._cards = cards.map((card):IProductWithCart=>{
         return {
           ...card,
+          image:card.image.replace(/\.svg$/,'.png'),
           price: card.price ?? "Бесценный товар",
           isInCart: false
         }
